@@ -43,4 +43,4 @@ jobs:
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
     - name: Publish to GCS
-      run: gsutil -m -q rsync -d -r _site ${{ secrets[steps.environment.outputs.BRANCH_SPECIFIC_BUCKET_NAME] }}
+      run: gcloud storage rsync _site ${{ secrets[steps.environment.outputs.BRANCH_SPECIFIC_BUCKET_NAME] }} --delete-unmatched-destination-objects --recursive
