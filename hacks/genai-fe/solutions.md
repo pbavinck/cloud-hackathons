@@ -24,8 +24,8 @@ Create a GCS bucket and copy sample files to that bucket.
 REGION=... 
 BUCKET="gs://$GOOGLE_CLOUD_PROJECT"
 
-gsutil mb -l $REGION $BUCKET
-gsutil -m cp -r gs://ghacks-genai-fe/* $BUCKET/ 
+gcloud storage buckets create --location=$REGION $BUCKET
+gcloud storage cp --recursive gs://ghacks-genai-fe/* $BUCKET/ 
 ```
 
 > [!NOTE]  

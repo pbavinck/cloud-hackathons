@@ -22,8 +22,8 @@ REGION="us-central1"
 BUCKET="gs://$GOOGLE_CLOUD_PROJECT-documents"
 STAGING="gs://$GOOGLE_CLOUD_PROJECT-staging"
 
-gsutil mb -l $REGION $BUCKET
-gsutil mb -l $REGION $STAGING
+gcloud storage buckets create --location $REGION $BUCKET
+gcloud storage buckets create --location $REGION $STAGING
 ```
 
 The following command enables the required notifications from the bucket to the Pub/Sub topic. Note that this can only be configured from the CLI, there's no option to do this via the Console.
@@ -72,10 +72,10 @@ prompt = prompt_template.format(text=text[:5000])
 
 Some participants might want to use string concatenation (instead of `prompt.format`, something like `prompt + text`) which could work, but that's less elegant and limits things (text can only be put at the end). Since for the next challenge the `format` function is going to be more important, it's good to stick to that for this challenge. The linked documentation for `str.format` is quite helpful.
 
-If you want to use `gsutil` & `jq` to get the contents, this is the command to use:
+If you want to use `gcloud storage` & `jq` to get the contents, this is the command to use:
 
 ```shell
-gsutil cat $STAGING/2309.00031.pdf/output-1-to-2.json | jq -r .responses[].fullTextAnnotation.text
+gcloud storage cat $STAGING/2309.00031.pdf/output-1-to-2.json | jq -r .responses[].fullTextAnnotation.text
 ```
 
 But, for non-technical people *or even for technical people* who don't have much `jq` experience, the easier option is to open the PDF file in a viewer and copy paste from there.
@@ -141,7 +141,7 @@ for URL in $URLS; do
 done
 
 for PDF in *.pdf; do
-   gsutil cp $PDF $BUCKET
+   gcloud storage cp $PDF $BUCKET
    sleep 10
 done
 ```
@@ -266,7 +266,7 @@ Create a new bucket to hold the embeddings.
 
 ```shell
 EMBEDDINGS="gs://$GOOGLE_CLOUD_PROJECT-embeddings"
-gsutil mb -l $REGION $EMBEDDINGS
+gcloud storage buckets create --location $REGION $EMBEDDINGS
 ```
 
 Export data in JSON format from BQ, make sure that column names are id & embedding [BQ Exporting Data](https://cloud.google.com/bigquery/docs/exporting-data#sql)
@@ -296,10 +296,10 @@ jq -c '.[]' exported.json > jsonl-formatted.json
 Assuming that files were written to the bucket, you can also do something like this:
 
 ```shell
-for FILE in `gsutil ls $EMBEDDINGS/raw/`
+for FILE in `gcloud storage ls $EMBEDDINGS/raw/`
 do 
     DST_NAME=`basename $FILE`
-    gsutil cat $FILE | jq -c '.[]' | gsutil cp - "$EMBEDDINGS/jsonl/${DST_NAME}"
+    gcloud storage cat $FILE | jq -c '.[]' | gcloud storage cp - "$EMBEDDINGS/jsonl/${DST_NAME}"
 done
 ```
 
@@ -325,7 +325,7 @@ EP_PATH=`gcloud ai index-endpoints list --region=$REGION --format=json | jq -r '
 INDEX_ID=`gcloud ai index-endpoints list --region=$REGION --format=json | jq -r '.[0].deployedIndexes[0].id'`
 URL="https://$EP_DOMAIN/v1/$EP_PATH:findNeighbors"
 
-FEATURES=`gsutil cat gs://$GOOGLE_CLOUD_PROJECT-embeddings/query/000000000000.json | jq -r '.text_embedding' | tr -d "\n"`
+FEATURES=`gcloud storage cat gs://$GOOGLE_CLOUD_PROJECT-embeddings/query/000000000000.json | jq -r '.text_embedding' | tr -d "\n"`
 
 cat <<EOF >query.json
 {

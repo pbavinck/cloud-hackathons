@@ -414,7 +414,7 @@ Create the bucket to hold the images.
 
 ```shell
 BUCKET="gs://$GOOGLE_CLOUD_PROJECT-images"
-gsutil mb -l $REGION $BUCKET
+gcloud storage buckets create --location $REGION $BUCKET
 ```
 
 Add the additional columns to BigQuery.
@@ -445,7 +445,7 @@ python3 genai-imagen-pipeline.py
 Easiest option to make the generated `yaml` file to Vertex AI Pipelines is to upload it to the newly created bucket.
 
 ```shell
-gsutil cp image-generation-pipeline.yaml $BUCKET
+gcloud storage cp image-generation-pipeline.yaml $BUCKET
 ```
 
 Now you can pick the `yaml` file from the UI, and provide the following parameters (replace the variables with their values).

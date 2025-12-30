@@ -530,7 +530,7 @@ Run the command `sudo su - videostitch` to assume the identity of the videostitc
 Use gsutil to copy some configuration files:
 
 ```shell
-gsutil cp gs://ibc2025-videostitch/* .
+gcloud storage cp gs://ibc2025-videostitch/* .
 ```
 
 Before running the scripts you just downloaded, remember to make them executable:

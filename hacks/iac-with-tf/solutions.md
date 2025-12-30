@@ -25,8 +25,8 @@ Creating the bucket to hold the Terraform state should be trivial, just make sur
 REGION=...
 PROJECT_ID=...
 BUCKET="gs://$PROJECT_ID-tf"
-gsutil mb -l $REGION $BUCKET
-gsutil versioning set on $BUCKET
+gcloud storage buckets create --location $REGION $BUCKET
+gcloud storage buckets update --versioning $BUCKET
 ```
 
 Terraform backend config should look like this:
