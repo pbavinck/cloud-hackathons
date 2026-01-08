@@ -96,7 +96,7 @@ For this challenge we'll use Gemini to determine what the title (including any s
 
 - You can edit and redeploy the Cloud Run Function from the Console.
 - You can test your prompts using [Vertex AI Studio](https://cloud.google.com/vertex-ai/docs/generative-ai/text/test-text-prompts#generative-ai-test-text-prompt-console).
-- You could get the content from PDF files by opening them in PDF reader and copying the text (or if you're very familiar with the CLI and love experimenting with `jq` you can do that by using `gsutil cat` & `jq` commands from Cloud Shell by accessing the JSON files in the staging bucket).
+- You could get the content from PDF files by opening them in PDF reader and copying the text (or if you're very familiar with the CLI and love experimenting with `jq` you can do that by using `gcloud storage cat` & `jq` commands from Cloud Shell by accessing the JSON files in the staging bucket).
 
 ## Challenge 3: Summarizing a large document using chaining
 

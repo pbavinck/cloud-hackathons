@@ -16,7 +16,7 @@ apt-get install -y wget unzip
 echo "Retrieving the source data..."
 wget https://github.com/meken/gcp-dataform-bqdwh/releases/download/v3.0.0/adwb.zip
 unzip adwb.zip
-gsutil -m cp -r adwb/* gs://$LANDING_BUCKET/
+gcloud storage cp --recursive adwb/* gs://$LANDING_BUCKET/
 echo "Source data successfully copied to the landing bucket."
 
 # Create the Cloud Composer environment in the background

@@ -84,8 +84,8 @@ Welcome to the coach's guide for the *Introduction to Conversational Agents* gHa
     1. You can run these commands in the Cloud Shell if you unzipped your files there:
 
         ```bash
-        gsutil mb gs://$(gcloud config get project)-documents
-        gsutil cp ./piped-piper/documents/*.pdf gs://$(gcloud config get project)-documents/HR-Policies
+        gcloud storage buckets create gs://$(gcloud config get project)-documents
+        gcloud storage cp ./piped-piper/documents/*.pdf gs://$(gcloud config get project)-documents/HR-Policies
         ```
 
 1. In the [Conversational Agents Console](https://dialogflow.cloud.google.com/v2/projects/) select **Playbooks** from the left-hand panel. Select the Default Playbook and at the bottom, click on the **+ Datastore** button.

@@ -26,7 +26,7 @@ Remember that this hack includes a [lecture presentation](resources/lectures.pdf
 Create a Cloud Storage bucket to store the replicated data
 
 ```shell
-gsutil mb -l ${REGION} gs://${PROJECT_ID}
+gcloud storage buckets create --location=${REGION} gs://${PROJECT_ID}
 ```
 
 Create a new topic called `cdc` which sends notifications about object changes to the Pub/Sub topic
@@ -110,8 +110,8 @@ Create a new bucket to hold additional stuff and copy the transformation logic t
 
 ```shell
 wget https://raw.githubusercontent.com/meken/gcp-realtime-analytics-db-setup/main/udf/retail_transform.js
-gsutil mb -l ${REGION} gs://${PROJECT_ID}-other
-gsutil cp retail_transform.js gs://${PROJECT_ID}-other/js/
+gcloud storage buckets create --location=${REGION} gs://${PROJECT_ID}-other
+gcloud storage cp retail_transform.js gs://${PROJECT_ID}-other/js/
 ```
 
 The subnet needs to be in format `regions/${REGION}/subnetworks/${subnet}`
