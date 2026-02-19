@@ -16,7 +16,7 @@ Many tasks can be accomplished through the Google CLoud UI. The below challenge 
 
 ### Notes & Guidance
 
-In this challenge the participants are tasked with creating BigQuery tables for _products_, _orders_ and _order_items_, which are backed by the Iceberg table format.
+In this challenge the participants are tasked with creating BigQuery tables for `products`, `orders` and `order_items`, which are backed by the Iceberg table format.
 
 This can be accomplished through the following steps:
 1. Create a bucket to hold the Iceberg tables
