@@ -64,10 +64,10 @@ You have been provided with raw sales data stored in a bucket on Google Cloud St
 The schema of the three tables are as follows:
 
 #### Schema files:
-You can find the schema in JSON format for these tables in the following links:
-- [orders](./resources/orders.json)
-- [order\_items](./resources/order_items.json)
-- [products](./resources/products.json)
+You can download the schema of these tables by using the following links. The schemas are in JSON format:
+- [orders](https://github.com/pbavinck/ghacks-olh-data/releases/download/v1.0.0/orders.json)
+- [order\_items](https://github.com/pbavinck/ghacks-olh-data/releases/download/v1.0.0/order_items.json)
+- [products](https://github.com/pbavinck/ghacks-olh-data/releases/download/v1.0.0/products.json)
 
 ### Success Criteria
 
