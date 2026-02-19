@@ -6,10 +6,10 @@ Welcome to DataFuture Corp. We are officially transitioning from our legacy data
 
 We have selected Apache Iceberg as our foundational table format. It provides the enterprise-grade features we require, including:
 
-* ACID Transactions: Ensuring data integrity across concurrent writes.  
-* Schema Evolution: Modifying tables without breaking downstream queries.  
-* Time Travel: Querying historical snapshots for audits or rollbacks.  
-* AI Readiness: Seamlessly integrating with machine learning workflows by providing high-performance data fetches for model training and supporting vectorized reads for AI-driven analytics.
+- ACID Transactions: Ensuring data integrity across concurrent writes.  
+- Schema Evolution: Modifying tables without breaking downstream queries.  
+- Time Travel: Querying historical snapshots for audits or rollbacks.  
+- AI Readiness: Seamlessly integrating with machine learning workflows by providing high-performance data fetches for model training and supporting vectorized reads for AI-driven analytics.
 
 Your team is tasked with building the bedrock of this platform on Google Cloud. You will begin by configuring the storage layer and conclude by demonstrating true multi-engine and AI interoperability.
 
@@ -20,34 +20,34 @@ Your team is tasked with building the bedrock of this platform on Google Cloud. 
 
 This hack will help you explore the following tasks:
 
-* Configuring BigLake for open table formats  
-* Creating and managing Iceberg tables using BigQuery  
-* Performing DML operations (ACID transactions) on Iceberg tables  
-* Utilizing time travel for historical data analysis  
-* Managing security with fine-grained access control  
-* Interacting with Iceberg tables using Dataproc (Spark)  
-* Integrating Iceberg data directly with Gemini models for AI use cases
+- Configuring BigLake for open table formats  
+- Creating and managing Iceberg tables using BigQuery  
+- Performing DML operations (ACID transactions) on Iceberg tables  
+- Utilizing time travel for historical data analysis  
+- Managing security with fine-grained access control  
+- Interacting with Iceberg tables using Dataproc (Spark)  
+- Integrating Iceberg data directly with Gemini models for AI use cases
 
 ## Challenges
 
-* Challenge 1: The open foundation  
-* Challenge 2: Data interoperability across Lakehouse  
-* Challenge 3: Schema evolution and time travel  
-* Challenge 4: Fine-grained access control  
-* Challenge 5: Multi-engine polyglot  
-* Challenge 6: AI with multi-modal analysis
+- Challenge 1: The open foundation  
+- Challenge 2: Data interoperability across Lakehouse  
+- Challenge 3: Schema evolution and time travel  
+- Challenge 4: Fine-grained access control  
+- Challenge 5: Multi-engine polyglot  
+- Challenge 6: AI with multi-modal analysis
 
 ## Prerequisites
 
-* Basic knowledge of Google Cloud Platform (BigQuery, Cloud Storage)  
-* Basic knowledge of SQL  
-* Basic understanding of Python/Spark is helpful but not mandatory
+- Basic knowledge of Google Cloud Platform (BigQuery, Cloud Storage)  
+- Basic knowledge of SQL  
+- Basic understanding of Python/Spark is helpful but not mandatory
 
 ## Contributors
 
-* Peter Bavinck  
-* Steve Loh  
-* Kelly Vehent
+- Peter Bavinck
+- Steve Loh
+- Kelly Vehent
 
 ## Challenge 1: The Open Foundation
 
@@ -255,25 +255,26 @@ The schema of the three tables are as follows:
     "mode": "NULLABLE",
     "description": "Identifier for the distribution center housing the product"
   }
+]
 ```
 
 ### Success Criteria
 
-* A Cloud Storage bucket exists in the same region as your dataset.  
-* A BigLake Cloud Resource connection is successfully created and has the required permissions to access the bucket.  
-* The tables `products`, `orders` and `order_items` exist, and their `table_format` is listed as `ICEBERG`.  
-* Querying the Iceberg tables returns data.
+- A Cloud Storage bucket exists in the same region as your dataset.  
+- A BigLake Cloud Resource connection is successfully created and has the required permissions to access the bucket.  
+- The tables `products`, `orders` and `order_items` exist, and their `table_format` is listed as `ICEBERG`.  
+- Querying the Iceberg tables returns data.
 
 ### Learning Resources
 
-* [Introduction to BigLake tables](https://cloud.google.com/bigquery/docs/biglake-intro)  
-* [Create and set up a Cloud resource connection](https://docs.cloud.google.com/bigquery/docs/create-cloud-resource-connection)  
-* [Create Iceberg tables in BigQuery](https://cloud.google.com/bigquery/docs/iceberg-tables)
+- [Introduction to BigLake tables](https://cloud.google.com/bigquery/docs/biglake-intro)  
+- [Create and set up a Cloud resource connection](https://docs.cloud.google.com/bigquery/docs/create-cloud-resource-connection)  
+- [Create Iceberg tables in BigQuery](https://cloud.google.com/bigquery/docs/iceberg-tables)
 
 ### Tips
 
-* Pay close attention to **Regions**. Your Bucket, Connection, and Dataset must all be in the same location (e.g., `us-central1`).  
-* You will need to grant specific IAM roles on your Storage Bucket to the Service Account created by the BigLake connection.
+- Pay close attention to **Regions**. Your Bucket, Connection, and Dataset must all be in the same location (e.g., `us-central1`).  
+- You will need to grant specific IAM roles on your Storage Bucket to the Service Account created by the BigLake connection.
 
 ## Challenge 2: Data interoperability across Lakehouse
 
@@ -289,19 +290,19 @@ Using the parquet file found in the raw data bucket on Cloud Storage, create a n
 
 Leverage the BigLake metadata layer to join your new users table with the existing Iceberg  tables. Write a single SQL query to aggregate the following metrics by country:
 
-* Total number of orders   
-* Total number of ordered items   
-* Total sales price
+- Total number of orders   
+- Total number of ordered items   
+- Total sales price
 
 ### Success Criteria
 
-* A BigQuery native table “users” is created with 100,000 rows.  
-* Query output contains 1 row per country, and each row has 3 columns that contain the correct metrics.
+- A BigQuery native table “users” is created with 100,000 rows.  
+- Query output contains 1 row per country, and each row has 3 columns that contain the correct metrics.
 
 ### Learning Resources
 
-* [Loading Parquet data from Cloud Storage](https://docs.cloud.google.com/bigquery/docs/loading-data-cloud-storage-parquet)  
-* [BigQuery Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax)
+- [Loading Parquet data from Cloud Storage](https://docs.cloud.google.com/bigquery/docs/loading-data-cloud-storage-parquet)  
+- [BigQuery Query syntax](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax)
 
 ## Challenge 3: Schema evolution and time travel
 
@@ -317,15 +318,15 @@ Beyond simple updates, Iceberg provides a safety net through Time Travel. Becaus
 
 The products table contains inconsistent naming conventions in the category column. Standardize the records by merging overlapping categories:
 
-* The category 'Socks & Hosiery' and 'Socks' are overlapping. Update 'Socks & Hosiery' to simply 'Socks'.  
-* The category 'Pants & Capris' and 'Pants' are overlapping. Update 'Pants & Capris' to simply 'Pants'.
+- The category 'Socks & Hosiery' and 'Socks' are overlapping. Update 'Socks & Hosiery' to simply 'Socks'.  
+- The category 'Pants & Capris' and 'Pants' are overlapping. Update 'Pants & Capris' to simply 'Pants'.
 
 **2\. Add a new column and set its value**
 
 Business requires a new flag to track order verification.
 
-* Evolve the schema by adding a new boolean column named is\_verified to the orders table.  
-* Set this value to FALSE for all records where an order was returned, and TRUE for all other records.
+- Evolve the schema by adding a new boolean column named is\_verified to the orders table.  
+- Set this value to FALSE for all records where an order was returned, and TRUE for all other records.
 
 **3\. Time travel with Iceberg travel**
 
@@ -333,16 +334,16 @@ Accidents happen. Data gets deleted or updated incorrectly. Use Time Travel to r
 
 ### Success Criteria
 
-* A SELECT DISTINCT on the category column shows no instances of "Socks & Hosiery" or "Pants & Capris."  
-* The orders table contains the is\_verified column with the correct boolean logic applied.  
-* The Time Travel query successfully returns a correct average retail price for the now-deleted "Pants & Capris" category.  
-* Additional metadata files have been created in the GCS folders of those tables that have been updated.
+- A SELECT DISTINCT on the category column shows no instances of "Socks & Hosiery" or "Pants & Capris."  
+- The orders table contains the is\_verified column with the correct boolean logic applied.  
+- The Time Travel query successfully returns a correct average retail price for the now-deleted "Pants & Capris" category.  
+- Additional metadata files have been created in the GCS folders of those tables that have been updated.
 
 ### Learning Resources
 
-* [DML syntax in BigQuery](https://cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax)  
-* [Time travel with Iceberg tables](https://cloud.google.com/bigquery/docs/iceberg-tables#time_travel)  
-* [FOR SYSTEM\_TIME AS OF clause](https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#for_system_time_as_of)
+- [DML syntax in BigQuery](https://cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax)  
+- [Time travel with Iceberg tables](https://cloud.google.com/bigquery/docs/iceberg-tables#time_travel)  
+- [FOR SYSTEM\_TIME AS OF clause](https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#for_system_time_as_of)
 
 ## Challenge 4: Fine-grained access control
 
@@ -356,30 +357,30 @@ Using BigLake and Data Catalog, you can enforce "Zero Trust" security directly o
 
 Create a new taxonomy called "Sensitive Data" in the us-central1 region with 2 data policies:
 
-* Confidential: using the default masking rule.  
-* Email: using the email masking rule.
+- Confidential: using the default masking rule.  
+- Email: using the email masking rule.
 
 Apply the newly created data policies to the tables:
 
-* Attach the Confidential data policy to products.retail\_price.  
-* Attach the Email data policy to users.email.  
-* Run a SQL query to select these columns. Are you able to read the data?
+- Attach the Confidential data policy to products.retail\_price.  
+- Attach the Email data policy to users.email.  
+- Run a SQL query to select these columns. Are you able to read the data?
 
 Assign the appropriate permissions to read the columns.
 
-* Add the Masked Reader role to your user and check if you can see the masked value.  
-* Add the Fine-Grained Reader role to your user, and check if you can see the original value.
+- Add the Masked Reader role to your user and check if you can see the masked value.  
+- Add the Fine-Grained Reader role to your user, and check if you can see the original value.
 
 ### Success Criteria
 
-* Column level security is applied correctly on the products and users tables.  
-* You are able to read the masked and unmasked data when using the appropriate roles.
+- Column level security is applied correctly on the products and users tables.  
+- You are able to read the masked and unmasked data when using the appropriate roles.
 
 ### Learning Resources
 
-* [Mask data by applying data policies](https://docs.cloud.google.com/bigquery/docs/column-data-masking#data-policies-on-column)  
-* [Masking rules](https://docs.cloud.google.com/bigquery/docs/reference/bigquerydatapolicy/rest/v2/projects.locations.dataPolicies#PredefinedExpression)  
-* [How Masked Reader and Fine-Grained Reader roles interact](https://docs.cloud.google.com/bigquery/docs/column-data-masking-intro#role-interaction)
+- [Mask data by applying data policies](https://docs.cloud.google.com/bigquery/docs/column-data-masking#data-policies-on-column)  
+- [Masking rules](https://docs.cloud.google.com/bigquery/docs/reference/bigquerydatapolicy/rest/v2/projects.locations.dataPolicies#PredefinedExpression)  
+- [How Masked Reader and Fine-Grained Reader roles interact](https://docs.cloud.google.com/bigquery/docs/column-data-masking-intro#role-interaction)
 
 ## Challenge 5: Multi-engine polyglot
 
@@ -398,27 +399,27 @@ Next, we create an interactive Spark session to use for our querying.
 Now that we have the setup done, we can query our BigQuery managed Iceberg tables using Spark. For each product brand, calculate the total revenue, the total profit, and the "Return Rate." This will help identify which brands are the most profitable and which might have quality issues causing a high rate of returns.
 
 Requirements:  
-\- Only include items where the order status is not 'Cancelled'.  
-\- Revenue: Sum of sale\_price from order\_items.  
-\- Profit: Sum of (sale\_price from order\_items minus cost from products).  
-\- Return Rate: The percentage of items where returned\_at is not null.  
-\- Filter the final results to only show brands that have generated at least $500 in total revenue.  
-\- Order the results by Profit in descending order.
+- Only include items where the order status is not 'Cancelled'.  
+- Revenue: Sum of sale\_price from order\_items.  
+- Profit: Sum of (sale\_price from order\_items minus cost from products).  
+- Return Rate: The percentage of items where returned\_at is not null.  
+- Filter the final results to only show brands that have generated at least $500 in total revenue.  
+- Order the results by Profit in descending order.
 
 ### Success Criteria
 
-* A Dataproc Serverless session is started in a BigQuery Notebook  
-* The total revenue, total profit and the return rate percentages are calculated. The return rates should be between 7% \- 15%.
+- A Dataproc Serverless session is started in a BigQuery Notebook  
+- The total revenue, total profit and the return rate percentages are calculated. The return rates should be between 7% \- 15%.
 
 ### Learning Resources
 
-* [Export table metadata](https://docs.cloud.google.com/bigquery/docs/exporting-data#export_table_metadata)  
-* [Create a Spark session in a BigQuery Studio notebook](https://docs.cloud.google.com/bigquery/docs/use-spark#create-a-single-spark-session-in-a-bigquery-studio-notebook)
+- [Export table metadata](https://docs.cloud.google.com/bigquery/docs/exporting-data#export_table_metadata)  
+- [Create a Spark session in a BigQuery Studio notebook](https://docs.cloud.google.com/bigquery/docs/use-spark#create-a-single-spark-session-in-a-bigquery-studio-notebook)
 
 ### Tips
 
-* Create the Spark session with version 2.3 (using the runtime\_config) and the available subnet (using environment\_config.execution\_config)  
-* A Notebook runtime template is available to you. Make sure you create your runtime based on this template.
+- Create the Spark session with version 2.3 (using the runtime\_config) and the available subnet (using environment\_config.execution\_config)  
+- A Notebook runtime template is available to you. Make sure you create your runtime based on this template.
 
 ## Challenge 6: AI with multi-modal analysis
 
@@ -436,12 +437,12 @@ A batch of images representing returned products has been uploaded to your Googl
 
 ## Success Criteria
 
-* An Object Table is successfully created and lists the URIs of the return images.  
-* A single table exists combining product and image metadata using the ObjectRef data type.  
-* A SQL query successfully processes the images and returns a text description of the condition of the returned item.
+- An Object Table is successfully created and lists the URIs of the return images.  
+- A single table exists combining product and image metadata using the ObjectRef data type.  
+- A SQL query successfully processes the images and returns a text description of the condition of the returned item.
 
 ## Learning Resources
 
-* [Introduction to Object Tables](https://cloud.google.com/bigquery/docs/object-table-introduction)  
-* [Analyze multimodal data in BigQuery](https://docs.cloud.google.com/bigquery/docs/analyze-multimodal-data)  
-* [Analyze images with a Gemini model](https://docs.cloud.google.com/bigquery/docs/image-analysis)
+- [Introduction to Object Tables](https://cloud.google.com/bigquery/docs/object-table-introduction)  
+- [Analyze multimodal data in BigQuery](https://docs.cloud.google.com/bigquery/docs/analyze-multimodal-data)  
+- [Analyze images with a Gemini model](https://docs.cloud.google.com/bigquery/docs/image-analysis)
