@@ -234,11 +234,11 @@ Requirements:
 
 ## Challenge 6: AI with multi-modal analysis
 
-## Introduction
+### Introduction
 
 In a modern Lakehouse, data isn't just rows and columns; it’s also unstructured data like images, PDFs, and audio. Google Cloud enables "multi-modality" by allowing BigQuery to manage and analyze unstructured data through **Object Tables**. By using **BigQuery AI** and pre-trained models (like Gemini or specialized vision models), we can extract insights from images—such as identifying defects in returned items—and join those insights directly with our Iceberg tables.
 
-## Description
+### Description
 
 A batch of images representing returned products has been uploaded to your Google Cloud Storage bucket in the `/return_images/` folder. Each filename corresponds to a product ID. Your goal is to analyze these images and extract a description of the faulty product and correlate this information with our product catalog.
 
@@ -246,13 +246,13 @@ A batch of images representing returned products has been uploaded to your Googl
 2. **Join product and image data**: Create a new table that brings the structured product data (backed by Iceberg) and the image metadata (Object table) together in a single table that contains a column using the ObjectRef data type.  
 3. **Perform Multi-modal Analysis**: Write a SQL query that uses the `AI.GENERATE` function to describe the condition of the products in the return images.
 
-## Success Criteria
+### Success Criteria
 
 - An Object Table is successfully created and lists the URIs of the return images.  
 - A single table exists combining product and image metadata using the ObjectRef data type.  
 - A SQL query successfully processes the images and returns a text description of the condition of the returned item.
 
-## Learning Resources
+### Learning Resources
 
 - [Introduction to Object Tables](https://cloud.google.com/bigquery/docs/object-table-introduction)  
 - [Analyze multimodal data in BigQuery](https://docs.cloud.google.com/bigquery/docs/analyze-multimodal-data)  
