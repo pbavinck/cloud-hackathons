@@ -1,0 +1,56 @@
+[
+  {
+    "name": "order_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "The unique identifier for the order"
+  },
+  {
+    "name": "user_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "The identifier for the user who placed the order"
+  },
+  {
+    "name": "status",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The current status of the order (e.g., Shipped, Processing)"
+  },
+  {
+    "name": "gender",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The gender associated with the order profile"
+  },
+  {
+    "name": "created_at",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE",
+    "description": "Timestamp when the order was created"
+  },
+  {
+    "name": "returned_at",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE",
+    "description": "Timestamp when the order was returned, if applicable"
+  },
+  {
+    "name": "shipped_at",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE",
+    "description": "Timestamp when the order was shipped"
+  },
+  {
+    "name": "delivered_at",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE",
+    "description": "Timestamp when the order was delivered"
+  },
+  {
+    "name": "num_of_item",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "The number of items contained in the order"
+  }
+]

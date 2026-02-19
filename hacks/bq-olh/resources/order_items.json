@@ -1,0 +1,68 @@
+[
+  {
+    "name": "id",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Unique identifier for the order item"
+  },
+  {
+    "name": "order_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Identifier for the associated order"
+  },
+  {
+    "name": "user_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Identifier for the user who placed the order"
+  },
+  {
+    "name": "product_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Identifier for the product purchased"
+  },
+  {
+    "name": "inventory_item_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Identifier for the specific inventory item"
+  },
+  {
+    "name": "status",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Current status of the item (e.g., Complete, Shipped, Returned)"
+  },
+  {
+    "name": "created_at",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE",
+    "description": "Timestamp when the item was added to the order"
+  },
+  {
+    "name": "shipped_at",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE",
+    "description": "Timestamp when the item was shipped"
+  },
+  {
+    "name": "delivered_at",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE",
+    "description": "Timestamp when the item was delivered"
+  },
+  {
+    "name": "returned_at",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE",
+    "description": "Timestamp when the item was returned"
+  },
+  {
+    "name": "sale_price",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "The price at which the item was sold"
+  }
+]

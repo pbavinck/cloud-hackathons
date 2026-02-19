@@ -1,0 +1,56 @@
+[
+  {
+    "name": "id",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Unique identifier for the product"
+  },
+  {
+    "name": "cost",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "The production or acquisition cost of the product"
+  },
+  {
+    "name": "category",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The category classification of the product"
+  },
+  {
+    "name": "name",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The full name of the product"
+  },
+  {
+    "name": "brand",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The brand name of the product"
+  },
+  {
+    "name": "retail_price",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "The price at which the product is sold to customers"
+  },
+  {
+    "name": "department",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The department the product belongs to (e.g., Men, Women)"
+  },
+  {
+    "name": "sku",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Stock Keeping Unit identifier"
+  },
+  {
+    "name": "distribution_center_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Identifier for the distribution center housing the product"
+  }
+]
