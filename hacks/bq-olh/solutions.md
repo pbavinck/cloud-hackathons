@@ -5,11 +5,12 @@
 Many tasks can be accomplished through the Google CLoud UI. The below challenge solutions however, mostly rely on Google Cloud CLI. These commands still give hints on how to accomplish the same through the UI, such as configuration settings needed.
 
 ## Coach's Guides
-- Challenge 1: The open foundation  
-- Challenge 2: Data interoperability across Lakehouse  
-- Challenge 3: Schema evolution and time travel  
-- Challenge 4: Fine-grained access control  
-- Challenge 5: Multi-engine polyglot  
+
+- Challenge 1: The open foundation
+- Challenge 2: Data interoperability across Lakehouse
+- Challenge 3: Schema evolution and time travel
+- Challenge 4: Fine-grained access control
+- Challenge 5: Multi-engine polyglot
 - Challenge 6: AI with multi-modal analysis
 
 ## Challenge 1: The open foundation
@@ -19,6 +20,7 @@ Many tasks can be accomplished through the Google CLoud UI. The below challenge 
 In this challenge the participants are tasked with creating BigQuery tables for `products`, `orders` and `order_items`, which are backed by the Iceberg table format.
 
 This can be accomplished through the following steps:
+
 1. Create a bucket to hold the Iceberg tables
 2. Create a connection for BigQuery to use when accessing GCS (along with proper access rights to the associated service account)
 3. Create the _sales_ dataset in BigQuery
@@ -29,7 +31,7 @@ This can be accomplished through the following steps:
 
 To use the code snippets below, please set these environment variables:
 
-```
+```shell
 export PROJECT_ID=$(gcloud config get-value project)
 
 # Optional: Add a check to ensure a project is actually set
@@ -56,8 +58,10 @@ ORDER_ITEMS_TABLE_NAME="order_items"
 PRODUCTS_TABLE_NAME="products"
 
 ```
+
 ### 1. Create a data bucket
-```
+
+```shell
 gcloud storage buckets create "gs://${DATA_BUCKET_NAME}" \
     --project="${PROJECT_ID}" \
     --location="${LOCATION}" \
@@ -66,15 +70,18 @@ gcloud storage buckets create "gs://${DATA_BUCKET_NAME}" \
 ```
 
 ### 2. Setup BigQuery Connection
+
 #### Create a bq connection to access the bucket
-```
+
+```shell
 BQ_CONNECTION_NAME="gcs-connection"
 bq mk --connection --location="${LOCATION}" --project_id="${PROJECT_ID}" \
     --connection_type=CLOUD_RESOURCE "${BQ_CONNECTION_NAME}" < /dev/null
 ```
 
 #### Give bq connection service account GCS permissions
-```
+
+```shell
 CONNECTION_SA="$(bq show --format=prettyjson --connection "${PROJECT_ID}"."${LOCATION}"."${BQ_CONNECTION_NAME}" | jq -r '.cloudResource.serviceAccountId')"
 
 gcloud storage buckets add-iam-policy-binding gs://"${DATA_BUCKET_NAME}" \
@@ -87,14 +94,16 @@ gcloud storage buckets add-iam-policy-binding gs://"${DATA_BUCKET_NAME}" \
 ```
 
 ### 3. Create dataset in BigQuery
-```
+
+```shell
 bq mk -d --location="${LOCATION}" "${PROJECT_ID}:${DATASET_ID}" < /dev/null
 ```
 
 ### 4. Create Iceberg-format tables in BigQuery
+
 The Iceberg table is created in its own folder within the bucket
 
-```
+```shell
 bq --project_id="${PROJECT_ID}" mk \
     --table \
     --file_format=PARQUET \
@@ -125,18 +134,21 @@ bq --project_id="${PROJECT_ID}" mk \
 ```
 
 Partitioning is in private preview so you can not yet use:
-```
+
+```shell
     --time_partitioning_field=created_at \
     --time_partitioning_type=DAY \
 ```
 
 Also, not using the following in the excercise yet:
-```
+
+```shell
     --clustering_fields=CLUSTER_COLUMN_LIST \
 ```
 
 ### 5. Load the data into the Iceberg tables
-```
+
+```shell
 bq --project_id="${PROJECT_ID}" load \
     --source_format=PARQUET \
     --parquet_enable_list_inference=true \
@@ -162,13 +174,16 @@ bq --project_id="${PROJECT_ID}" load \
 ### Notes & Guidance
 
 In this challenge the participants will:
+
 1. Create a BigQuery native storage table `users` by directly importing the table and data from a parquet file.
-2. Create a SQL statement that joins data from both 
+2. Create a SQL statement that joins data from both
 
 ### 1. Create Users table
+
 Create a native BigQuery table called `users` from the parquet file.
 You should not need to define the table schema since BigQuery can automatically discover it from the parquet file.
-```
+
+```sql
 LOAD DATA OVERWRITE marketing.users
 FROM FILES (
   format = 'PARQUET',
@@ -176,10 +191,12 @@ FROM FILES (
 ```
 
 ### 2. Create a join SQL statement
-Thanks to BigLake which is a metadata layer above various storage engines on Google Cloud, you can seamlessly access data across Iceberg tables that are stored on GCS as well as BigQuery native table. 
+
+Thanks to BigLake which is a metadata layer above various storage engines on Google Cloud, you can seamlessly access data across Iceberg tables that are stored on GCS as well as BigQuery native table.
 
 Create a single SQL query that calculates for every country the (1) total number of orders (2) total number of ordered items and (3) total sales price.
-```
+
+```sql
 SELECT
   users.country,
   COUNT(orders.order_id) AS number_of_order,
@@ -201,11 +218,13 @@ ORDER BY
 
 In traditional data lakes, changing a schema (like renaming a column) or updating specific rows often requires rewriting the entire dataset. Apache Iceberg solves this by handling metadata changes efficiently and supporting ACID transactions. Thanks to BigQuery, you can easily perform the changes using BigQuery SQL with its rich syntax.
 
-
 ### 1. Clean up the product category
+
 It seems like the category column in products table has overlap and inconsistent naming conventions. Change the following:
-1. The category 'Socks & Hosiery' and 'Socks' are overlapping. Rename all records with 'Socks & Hosiery' to 'Socks'.
-```
+
+Step 1. The category 'Socks & Hosiery' and 'Socks' are overlapping. Rename all records with 'Socks & Hosiery' to 'Socks'.
+
+```sql
 UPDATE `sales.products`
 SET
   category = 'Socks'
@@ -213,8 +232,9 @@ WHERE
   category = 'Socks & Hosiery';
 ```
 
-2. The category 'Pants & Capris' and 'Pants' are overlapping. Rename all records with 'Pants & Capris' to 'Pants'.
-```
+Step 2. The category 'Pants & Capris' and 'Pants' are overlapping. Rename all records with 'Pants & Capris' to 'Pants'.
+
+```sql
 UPDATE `sales.products`
 SET
   category = 'Pants'
@@ -223,9 +243,10 @@ WHERE
 ```
 
 ### 2. Add a new column and set its value
+
 The company decides to investigate all orders that were returned. Create a new column in orders table called 'is_verified' (boolean) and set it to False for all returned orders and other records as True.
 
-```
+```sql
 ALTER TABLE`sales.orders` ADD COLUMN is_verified BOOLEAN;
 
 UPDATE `sales.orders`
@@ -238,7 +259,8 @@ WHERE TRUE;
 ```
 
 Demonstrate the change by listing the number of records grouped per status and is_verified.
-```
+
+```sql
 SELECT status, is_verified, count(is_verified)
 FROM `sales.orders`
 GROUP BY 1, 2
@@ -246,11 +268,12 @@ LIMIT 10;
 ```
 
 ### 3. Time travel with Iceberg travel
+
 Accidents happen. Data gets deleted or updated incorrectly. One of the most powerful features of Iceberg is "Time Travel" — the ability to query the table as it existed at a specific point in time using snapshots.
 
 Run a SQL statement to calcualte average retail price of products with category = 'Pants & Capris' (which you have just updated to "Pants") as it was one hour ago.
 
-```
+```sql
 SELECT AVG(retail_price) AS average_retail_price
 FROM `sales.products`
 FOR SYSTEM_TIME AS OF TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 HOUR)
@@ -258,6 +281,7 @@ WHERE category = 'Pants & Capris';
 ```
 
 ### 4. Check the metadata files of the Iceberg tables
+
 Since you just updated the table `products` and `orders`, additional metadata files have been created in the GCS folders of those tables. Have a look and can you identify the metadata changes?
 
 ## Challenge 4: Fine-grained access control
@@ -267,16 +291,20 @@ Since you just updated the table `products` and `orders`, additional metadata fi
 As the Lakehouse grows, so does the responsibility to protect sensitive information. While open standards provide flexibility, we must ensure that PII (Personally Identifiable Information) is only visible to authorized personnel. BigLake allows you to apply fine-grained access control, such as Data Masking rules directly on Iceberg tables, ensuring that sensitive data is obscured even when queried through BigQuery.
 
 ### 1. Create the taxonomy and policy tags
+
 Create a new taxonomy called "Sensitive Data" in the us-central1 region with 2 data policies:
+
 - Confidential: with default masking rule
 - Email: with email masking rule
 
 ### 2. Apply the data policy
+
 1. Attach the Confidential data policy to products.retail_price.
 2. Attach the Email data policy to users.email.
 3. Run a SQl statement to select these columns, are you able to read the data?
 
 ### 3. Assign appropriate permission to read the columns
+
 1. Add Masked Reader role to your user, and check if you see the masked value?
 2. Add Fine-Grained Reader role to your user, and check if you see the original value?
 
@@ -287,10 +315,12 @@ Create a new taxonomy called "Sensitive Data" in the us-central1 region with 2 d
 In this challenge the participants are tasked with creating a Notebook in BigQuery, setup a Spark session and run a simple analysis over the Iceberg tables.
 
 ### 0. Setup
+
 A Notebook runtime template is already available (`olh-runtime`). Simply connect the new Notebook to a newly created runtime based on this template.
 
 Setting environment variables to use in the Notebook:
-```
+
+```shell
 PROJECT_ID = "<PROJECT_ID>"
 DATASET_NAME = "sales"
 LOCATION = "us-central1"
@@ -299,6 +329,7 @@ DATA_BUCKET_NAME = "<SALES_DATA_BUCKET_NAME>"
 ```
 
 Another important task to carry out is the export of the metadata to GCS/Iceberg. This can be accomplished in the Notebook using these commands:
+
 ```sql
 %%bigquery --pyformat
 
@@ -308,12 +339,15 @@ EXPORT TABLE METADATA FROM {DATASET_NAME}.order_items;
 ```
 
 ### 1. Setup Spark Session
+
 The following should not be necessary, but just in case... Authenticate the Notebook using application defaut credentials based on the user using:
-```
+
+```shell
 !gcloud auth application-default login --no-launch-browser
 ```
 
 Create the Spark session:
+
 ```python
 import pyspark
 from google.cloud.dataproc_spark_connect import DataprocSparkSession
@@ -355,6 +389,7 @@ spark.conf.set("viewsEnabled","true")
 ```
 
 ### 2. Load data from BigQuery into Spark dataframe
+
 ```python
 products = spark.read.format('bigquery') \
   .option('table', f'{PROJECT_ID}.{DATASET_NAME}.products') \
@@ -373,9 +408,11 @@ order_items.createOrReplaceTempView('order_items')
 ```
 
 ### 2. Run a simple analysis over the Iceberg tables
+
 **Objective**: For each Product Brand, calculate the total revenue, the total profit, and the "Return Rate." This will help identify which brands are the most profitable and which might have quality issues (high returns).
 
 Requirements:
+
 - Only include items where the order status is not 'Cancelled'.
 - Revenue: Sum of sale_price from order_items.
 - Profit: Sum of (sale_price from order_items minus cost from products).
@@ -384,6 +421,7 @@ Requirements:
 - Order the results by Profit in descending order.
 
 Solution query:
+
 ```python
 spark.sql(f"USE `{rest_catalog_with_bq_federation}`;")
 
@@ -425,15 +463,16 @@ In this challenge the participants are tasked with creating object tables, table
 
 This can be accomplished through the following steps:
 
-1. Create a bucket to hold the return images  
-2. Upload the images to this bucket  
-3. Creating a “returnimages” object table, reusing the previously created GCS connection (with updated permissions)  
-4. Creating a new `returns_analysis` table with ObjectRef column by joining the returns and returnimages tables  
+1. Create a bucket to hold the return images
+2. Upload the images to this bucket
+3. Creating a “returnimages” object table, reusing the previously created GCS connection (with updated permissions)
+4. Creating a new `returns_analysis` table with ObjectRef column by joining the returns and returnimages tables
 5. Use AI.GENERATE to generate a description of the damaged item
 
 Step 1. and 2. have already done during the setup process of the lab. Participant are only tasked with steps 3. through 5.
 
 ### 1\. Create a data bucket
+
 This is already done during setup.
 
 ```bash
@@ -443,12 +482,14 @@ gcloud storage buckets create "gs://my-bucket-name" \
       --public-access-prevention \
       --uniform-bucket-level-access
 ```
-[https://docs.cloud.google.com/storage/docs/creating-buckets\#console](https://docs.cloud.google.com/storage/docs/creating-buckets#console) 
+
+[https://docs.cloud.google.com/storage/docs/creating-buckets\#console](https://docs.cloud.google.com/storage/docs/creating-buckets#console)
 
 ### 2\. Upload images
+
 This is already done during setup.
 
-[https://docs.cloud.google.com/storage/docs/uploading-objects\#upload-object-console](https://docs.cloud.google.com/storage/docs/uploading-objects#upload-object-console) 
+[https://docs.cloud.google.com/storage/docs/uploading-objects\#upload-object-console](https://docs.cloud.google.com/storage/docs/uploading-objects#upload-object-console)
 
 ### 3\. Create object table
 
@@ -480,11 +521,9 @@ JOIN `sales.return_images` ri
 
 ```sql
 SELECT
-  brand, name, 
-  ref.uri, 
+  brand, name,
+  ref.uri,
   AI.GENERATE(
     ("Give a short description of the damage as shown on the item", OBJ.GET_ACCESS_URL(ref, 'r'))).result AS damage
 FROM `sales.product_analysis`;
 ```
-
-
