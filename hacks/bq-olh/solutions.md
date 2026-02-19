@@ -1,16 +1,16 @@
-# Google Cloud Open Lakehouse with Apache Iceberg
+# Open Lakehouse with Apache Iceberg
 
 ## Introduction
 
 Many tasks can be accomplished through the Google CLoud UI. The below challenge solutions however, mostly rely on Google Cloud CLI. These commands still give hints on how to accomplish the same through the UI, such as configuration settings needed.
 
 ## Coach's Guides
-* Challenge 1: The open foundation  
-* Challenge 2: Data interoperability across Lakehouse  
-* Challenge 3: Schema evolution and time travel  
-* Challenge 4: Fine-grained access control  
-* Challenge 5: Multi-engine polyglot  
-* Challenge 6: AI with multi-modal analysis
+- Challenge 1: The open foundation  
+- Challenge 2: Data interoperability across Lakehouse  
+- Challenge 3: Schema evolution and time travel  
+- Challenge 4: Fine-grained access control  
+- Challenge 5: Multi-engine polyglot  
+- Challenge 6: AI with multi-modal analysis
 
 ## Challenge 1: The open foundation
 
@@ -267,9 +267,9 @@ Since you just updated the table `products` and `orders`, additional metadata fi
 As the Lakehouse grows, so does the responsibility to protect sensitive information. While open standards provide flexibility, we must ensure that PII (Personally Identifiable Information) is only visible to authorized personnel. BigLake allows you to apply fine-grained access control, such as Data Masking rules directly on Iceberg tables, ensuring that sensitive data is obscured even when queried through BigQuery.
 
 ### 1. Create the taxonomy and policy tags
- Create a new taxonomy called "Sensitive Data" in the us-central1 region with 2 data policies:
- - Confidential: with default masking rule
- - Email: with email masking rule
+Create a new taxonomy called "Sensitive Data" in the us-central1 region with 2 data policies:
+- Confidential: with default masking rule
+- Email: with email masking rule
 
 ### 2. Apply the data policy
 1. Attach the Confidential data policy to products.retail_price.

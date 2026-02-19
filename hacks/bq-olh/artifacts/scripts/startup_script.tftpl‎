@@ -1,0 +1,110 @@
+#!/bin/bash
+
+# Installing the OS dependencies
+apt-get install -y wget unzip
+
+# These are Terraform variables (Single $)
+export DEST_PROJECT_ID=${gcp_project_id}
+export REGION=${gcp_region}
+export DEST_BUCKET_NAME=${gcs_bucket}
+export NAT_GATEWAY_NAME=${nat_gateway_name}
+export ROUTER_NAME=${router_name}
+export NETWORK_NAME=${network_name}
+export SUBNET_NAME=${subnet_name}
+
+SOURCE_PROJECT_ID="bigquery-public-data"
+SOURCE_DATASET_ID="thelook_ecommerce"
+
+# Below is commented out as we would like to have a stable snapshot of data
+# In practice this means that the dates in the data might be old(er)
+# PLEASE KEEP CODE BELOW IF WE CHANGE OUR OPINION ON THIS
+
+# These are Bash variables (Double $$)
+# Create a fresh copy of some tables in the Look ecommerce data set
+# TABLES=("users" "orders" "order_items" "products")
+# for TABLE_ID in "$${TABLES[@]}"
+# do
+#     TABLE_REF="$${SOURCE_PROJECT_ID}:$${SOURCE_DATASET_ID}.$${TABLE_ID}"
+#     GCS_DESTINATION="gs://$${DEST_BUCKET_NAME}/$${TABLE_ID}/$${TABLE_ID}-*.parquet"
+
+#     echo "Exporting: $${TABLE_ID}..."
+    
+#     bq -q --project_id "$${DEST_PROJECT_ID}" extract \
+#       --nosync \
+#       --destination_format PARQUET \
+#       --compression ZSTD \
+#       "$${TABLE_REF}" \
+#       "$${GCS_DESTINATION}" < /dev/null
+
+#     echo "Job submitted for $${TABLE_ID}"
+# done
+
+# Copying a previously downloaded snapshot from github
+# Retrieve the image files and copy them to the bucket
+echo "Retrieving the data files and uploading to GCS..."
+TABLES=("users" "orders" "order_items" "products")
+for TABLE_ID in "$${TABLES[@]}"
+do
+    echo "Processing $${TABLE_ID}..."
+    SOURCE_FILE="https://github.com/pbavinck/ghacks-olh-data/releases/download/v1.0.0/$${TABLE_ID}-000000000000.parquet"
+    GCS_DESTINATION="gs://$${DEST_BUCKET_NAME}/$${TABLE_ID}/"
+
+    wget $SOURCE_FILE
+    gcloud storage cp $TABLE_ID-000000000000.parquet $GCS_DESTINATION
+
+done
+
+wget https://github.com/pbavinck/ghacks-olh-data/releases/download/v1.0.0/ghacks-olh-images-1.zip
+wget https://github.com/pbavinck/ghacks-olh-data/releases/download/v1.0.0/ghacks-olh-images-2.zip
+
+unzip ghacks-olh-images-1.zip
+unzip ghacks-olh-images-2.zip
+
+gcloud storage cp *.png gs://$DEST_BUCKET_NAME/return_images/
+echo "Image successfully copied to the bucket."
+
+# Create the Colab Runtime template w/specific python version
+# Write to request.json
+cat <<EOF > request.json
+{
+  "displayName": "olh-runtime",
+  "machineSpec": {
+    "machineType": "e2-standard-2",
+  },
+  "shieldedVmConfig": {
+    "enableSecureBoot": true
+  },
+  "networkSpec": {
+    "enableInternetAccess": false,
+    "network": "projects/$${DEST_PROJECT_ID}/global/networks/$${NETWORK_NAME}",
+    "subnetwork": "projects/$${DEST_PROJECT_ID}/regions/$${REGION}/subnetworks/$${SUBNET_NAME}"
+  },
+  "softwareConfig": {
+    "colabImage": {
+      "releaseName": "py311"
+    }
+  }
+}
+EOF
+
+# Call API to create the template
+curl -X POST \
+     -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+     -H "Content-Type: application/json; charset=utf-8" \
+     -d @request.json \
+     "https://$${REGION}-aiplatform.googleapis.com/v1/projects/$${DEST_PROJECT_ID}/locations/$${REGION}/notebookRuntimeTemplates" 
+
+
+# Delete the route to save cost
+gcloud compute routers nats delete $NAT_GATEWAY_NAME \
+    --router=$ROUTER_NAME \
+    --region=$REGION \
+    --quiet
+
+gcloud compute routers delete $ROUTER_NAME \
+    --region=$REGION \
+    --quiet
+
+
+# Delete the instance
+# gcloud compute instances delete startup-vm --zone=${gcp_zone} --quiet

@@ -1,4 +1,4 @@
-# Google Cloud Open Lakehouse with Apache Iceberg
+# Open Lakehouse with Apache Iceberg
 
 ## Introduction
 
